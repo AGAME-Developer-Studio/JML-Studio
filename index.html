@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JML Studio - Retro PSX Horror</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="icon" href="https://i.postimg.cc/0b6ppScJ/JML-Logo-01.png" type="image/png">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+        body {
+            margin: 0;
+            background: #0a0a0a;
+            color: #33ff33;
+            font-family: 'VT323', monospace;
+            image-rendering: pixelated;
+            overflow-x: hidden;
+            position: relative;
+        }
+        .crt {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(rgba(18, 16, 16, 0.4), rgba(0, 0, 0, 0.75));
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0.5;
+            animation: vignettePulse 7s ease-in-out infinite;
+        }
+        .crt::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4) 2px, transparent 2px, transparent 10px);
+            mix-blend-mode: overlay;
+            animation: scanline 4s linear infinite;
+        }
+        header, main, footer {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 70px;
+            background: linear-gradient(180deg, rgba(0, 35, 0, 0.94), rgba(0, 25, 0, 0.92));
+            border: 9px solid #33ff33;
+            box-shadow: 0 0 70px #33ff33, inset 0 0 35px #33ff33;
+            border-radius: 18px;
+        }
+        .logo {
+            display: block;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 350px;
+            filter: drop-shadow(0 0 35px #33ff33) brightness(1.5);
+            animation: consoleBoot 2.5s ease-out, neonPulse 2s infinite;
+            border-radius: 14px;
+        }
+        h1 {
+            font-size: 6em;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 10px;
+            text-shadow: 0 0 40px #33ff33, 0 0 50px #ff00cc, 0 0 3px #fff;
+            animation: glitch 1.5s infinite;
+        }
+        h2 {
+            font-size: 3.5em;
+            text-transform: uppercase;
+            letter-spacing: 7px;
+            text-shadow: 0 0 30px #33ff33, 0 0 20px #ff00cc, 0 0 3px #fff;
+            margin-bottom: 40px;
+        }
+        p {
+            font-size: 1.8em;
+            line-height: 2.1;
+            text-shadow: 0 0 3px #fff;
+        }
+        .link-button, .play-button, .submit-button, .admin-button, .toggle-button {
+            display: inline-block;
+            padding: 18px 36px;
+            margin: 12px;
+            border: 5px solid #33ff33;
+            background: linear-gradient(45deg, rgba(51, 255, 51, 0.35), rgba(0, 60, 0, 0.35));
+            color: #33ff33;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 0 25px #33ff33;
+            border-radius: 12px;
+            cursor: pointer;
+            position: relative;
+            z-index: 10;
+            font-size: 1.6em;
+        }
+        .link-button:hover, .play-button:hover, .submit-button:hover, .admin-button:hover, .toggle-button:hover {
+            background: linear-gradient(45deg, #00cccc, #00b7eb);
+            color: #000;
+            box-shadow: 0 0 50px #00cccc;
+            transform: scale(1.1);
+        }
+        .link-button:active, .play-button:active, .submit-button:active, .admin-button:active, .toggle-button:active {
+            transform: scale(0.95);
+            box-shadow: 0 0 15px #00cccc;
+        }
+        .admin-button {
+            border-color: #ff0000;
+            color: #ff0000;
+            box-shadow: 0 0 25px #ff0000;
+            background: linear-gradient(45deg, rgba(255, 0, 0, 0.35), rgba(60, 0, 0, 0.35));
+        }
+        .admin-button:hover {
+            background: linear-gradient(45deg, #ff0000, #cc0000);
+            color: #fff;
+            box-shadow: 0 0 50px #ff0000;
+        }
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+            gap: 60px;
+            margin: 80px 0;
+        }
+        .game-card {
+            position: relative;
+            border: 7px solid #33ff33;
+            padding: 45px;
+            background: linear-gradient(135deg, rgba(0, 35, 0, 0.94), rgba(10, 10, 10, 0.92));
+            box-shadow: 0 0 50px #33ff33;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            border-radius: 18px;
+            overflow: hidden;
+        }
+        .game-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 0 70px #ff00cc, inset 0 0 20px #00cccc;
+        }
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 204, 204, 0.5), transparent);
+            transition: 0.7s;
+        }
+        .game-card:hover::before {
+            left: 100%;
+        }
+        .game-title {
+            font-size: 3em;
+            text-transform: uppercase;
+            text-shadow: 0 0 30px #33ff33, 0 0 20px #ff00cc, 0 0 3px #fff;
+        }
+        .game-description {
+            color: #e0e0e0;
+            margin: 35px 0;
+            font-size: 1.6em;
+            text-shadow: 0 0 3px #fff;
+        }
+        .updates-list {
+            list-style: none;
+            padding: 0;
+            margin: 35px 0;
+        }
+        .updates-list li {
+            font-size: 1.7em;
+            color: #e0e0e0;
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 40px;
+            text-shadow: 0 0 3px #fff;
+        }
+        .updates-list li::before {
+            content: '▶';
+            position: absolute;
+            left: 0;
+            color: #ff00cc;
+        }
+        .version-info {
+            font-size: 1.7em;
+            color: #ff00cc;
+            margin-top: 35px;
+            text-shadow: 0 0 20px #ff00cc, 0 0 3px #fff;
+        }
+        .team-section {
+            margin: 80px 0;
+        }
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 35px;
+            margin-top: 35px;
+        }
+        .team-card {
+            border: 6px solid #33ff33;
+            padding: 35px;
+            background: linear-gradient(135deg, rgba(0, 35, 0, 0.94), rgba(10, 10, 10, 0.92));
+            box-shadow: 0 0 35px #33ff33;
+            border-radius: 14px;
+            text-align: center;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+        .team-card:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 50px #ff00cc;
+        }
+        .team-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(0, 204, 204, 0.15), transparent);
+            transition: opacity 0.3s;
+            opacity: 0;
+        }
+        .team-card:hover::after {
+            opacity: 1;
+        }
+        .behind-section {
+            margin: 80px 0;
+            border: 4px solid #33ff33;
+            padding: 40px;
+            background: rgba(10, 0, 10, 0.94);
+            box-shadow: 0 0 40px #33ff33;
+            border-radius: 14px;
+        }
+        .typewriter {
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 4px solid #33ff33;
+            animation: typing 3s steps(40, end) infinite, blink-caret 0.7s step-end infinite;
+        }
+        .verified {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+        .verified svg {
+            width: 40px;
+            height: 40px;
+            margin-left: 14px;
+            filter: drop-shadow(0 0 20px #1DA1F2);
+            animation: checkPulse 1.5s infinite;
+            transition: transform 0.3s ease-in-out;
+        }
+        .verified:hover svg {
+            transform: scale(1.1);
+        }
+        .admin-checkmark {
+            width: 24px;
+            height: 24px;
+            filter: drop-shadow(0 0 10px #1DA1F2);
+            animation: checkPulse 1.5s infinite;
+            vertical-align: middle;
+        }
+        .input-field {
+            width: 100%;
+            padding: 14px;
+            margin: 12px 0;
+            border: 4px solid #33ff33;
+            background: rgba(0, 0, 0, 0.7);
+            color: #33ff33;
+            font-family: 'VT323', monospace;
+            font-size: 1.6em;
+            border-radius: 8px;
+            box-shadow: 0 0 20px #33ff33;
+            outline: none;
+            transition: all 0.3s ease-in-out;
+        }
+        .input-field:focus {
+            border-color: #ff00cc;
+            box-shadow: 0 0 30px #ff00cc;
+        }
+        .comment-card, .profile-card {
+            border: 5px solid #33ff33;
+            padding: 25px;
+            margin: 20px 0;
+            background: linear-gradient(135deg, rgba(0, 35, 0, 0.94), rgba(10, 10, 10, 0.92));
+            box-shadow: 0 0 30px #33ff33;
+            border-radius: 12px;
+        }
+        .admin-reply-card {
+            margin-left: 20px;
+            border: 2px solid #ff00cc;
+            padding: 10px;
+            margin-top: 10px;
+            background: linear-gradient(135deg, rgba(0, 35, 0, 0.94), rgba(10, 10, 10, 0.92));
+            box-shadow: 0 0 15px #ff00cc;
+            border-radius: 6px;
+        }
+        .comment-author, .profile-title {
+            font-size: 1.8em;
+            color: #ff00cc;
+            text-shadow: 0 0 15px #ff00cc;
+            display: inline-flex;
+            align-items: center;
+            flex-wrap: nowrap;
+            gap: 6px;
+        }
+        .admin-tag {
+            color: #ff0000;
+            text-shadow: 0 0 10px #ff0000;
+            font-size: 1.8em;
+        }
+        .comment-text, .profile-text {
+            font-size: 1.6em;
+            color: #e0e0e0;
+            margin-top: 10px;
+            text-shadow: 0 0 3px #fff;
+        }
+        .admin-reply-card .comment-author {
+            font-size: 1.4em;
+            display: inline-flex;
+            align-items: center;
+            flex-wrap: nowrap;
+            gap: 4px;
+        }
+        .admin-reply-card .admin-tag {
+            font-size: 1.4em;
+        }
+        .admin-reply-card .comment-text {
+            font-size: 1.3em;
+        }
+        .admin-reply-card .comment-text.timestamp {
+            font-size: 1.1em;
+            color: #999;
+        }
+        .reply-input-panel {
+            margin-top: 15px;
+            padding: 15px;
+            border: 3px solid #ff00cc;
+            background: rgba(10, 0, 10, 0.9);
+            border-radius: 8px;
+        }
+        .error-message {
+            color: #ff0000;
+            font-size: 1.6em;
+            text-shadow: 0 0 10px #ff0000;
+            margin: 10px 0;
+        }
+        .success-message {
+            color: #33ff33;
+            font-size: 1.6em;
+            text-shadow: 0 0 10px #33ff33;
+            margin: 10px 0;
+        }
+        .hidden {
+            display: none;
+        }
+        footer {
+            text-align: center;
+            margin-top: 90px;
+            border-top: 7px solid #33ff33;
+            padding-top: 45px;
+        }
+        .social-link {
+            margin: 0 35px;
+            font-size: 1.7em;
+        }
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            10% { transform: translate(-6px, 6px); }
+            20% { transform: translate(6px, -6px); }
+            30% { transform: translate(0); }
+            100% { transform: translate(0); }
+        }
+        @keyframes vignettePulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 0.45; }
+            100% { opacity: 0.5; }
+        }
+        @keyframes scanline {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 140px; }
+        }
+        @keyframes consoleBoot {
+            0% { opacity: 0; transform: scale(0.2); filter: blur(8px); }
+            50% { opacity: 0.6; transform: scale(1.1); filter: blur(4px); }
+            100% { opacity: 1; transform: scale(1); filter: blur(0); }
+        }
+        @keyframes neonPulse {
+            0% { filter: drop-shadow(0 0 35px #33ff33); }
+            50% { filter: drop-shadow(0 0 45px #33ff33); }
+            100% { filter: drop-shadow(0 0 35px #33ff33); }
+        }
+        @keyframes checkPulse {
+            0% { transform: scale(1); filter: drop-shadow(0 0 10px #1DA1F2); }
+            50% { transform: scale(1.05); filter: drop-shadow(0 0 15px #1DA1F2); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 10px #1DA1F2); }
+        }
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: #33ff33; }
+        }
+        @media (max-width: 600px) {
+            h1 { font-size: 4.5em; }
+            h2 { font-size: 2.8em; }
+            p { font-size: 1.6em; }
+            header, main, footer { padding: 50px; }
+            .game-card { padding: 35px; }
+            .logo { max-width: 250px; }
+            .game-grid { grid-template-columns: 1fr; }
+            .team-grid { grid-template-columns: 1fr; }
+            .behind-section { padding: 30px; }
+            .verified svg { width: 36px; height: 36px; }
+            .admin-checkmark { width: 20px; height: 20px; }
+            .link-button, .play-button, .submit-button, .admin-button, .toggle-button { 
+                padding: 16px 32px;
+                font-size: 1.4em;
+            }
+            .comment-author, .profile-title { font-size: 1.6em; }
+            .admin-tag { font-size: 1.6em; }
+            .admin-reply-card .comment-author { font-size: 1.2em; }
+            .admin-reply-card .admin-tag { font-size: 1.2em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="crt"></div>
+    <header>
+        <img src="https://i.postimg.cc/0b6ppScJ/JML-Logo-01.png" alt="JML Studio Logo" class="logo">
+        <h1>JML Studio</h1>
+        <p class="text-center text-4xl mt-4">Retro PSX Horror That Haunts Your Dreams</p>
+    </header>
+    <main>
+        <section class="mb-28">
+            <h2>Our Mission</h2>
+            <p class="mt-4">
+                JML Studio is your portal to the chilling abyss of retro PSX horror. We craft low-poly nightmares with haunting soundscapes and stories that cling to your soul. 
+                Inspired by the raw terror of '90s survival horror, we blend nostalgic dread with cutting-edge twists. Dare to venture into the darkness?
+            </p>
+        </section>
+        <section class="mb-28">
+            <h2>Our Games</h2>
+            <p class="mt-4">Dive into our sinister creations on <a href="https://agamedeveloperstudio.itch.io/" target="_blank" rel="noopener noreferrer" class="link-button" onclick="console.log('Itch.io community clicked')">Itch.io</a>. 
+               From cursed burger joints to haunted trailer parks, our games deliver heart-pounding retro horror.</p>
+            <div class="game-grid">
+                <div class="game-card">
+                    <h3 class="game-title">Burger Shop</h3>
+                    <p class="game-description">Welcome to the Burger Shop, where the fries are fresh, but the shadows serve something sinister. 
+                       Can you survive the night shift?</p>
+                    <a href="https://agamedeveloperstudio.itch.io/whispers-in-the-dark-burger-shop" target="_blank" rel="noopener noreferrer" class="play-button" onclick="console.log('Burger Shop Play Now clicked')">Play Now</a>
+                </div>
+                <div class="game-card">
+                    <h3 class="game-title">Trailer Park</h3>
+                    <p class="game-description">Welcome to the Trailer Park, where silence deafens and darkness hides unspeakable horrors. 
+                       What lurks beyond the flickering lights?</p>
+                    <a href="https://agamedeveloperstudio.itch.io/trailer-park" target="_blank" rel="noopener noreferrer" class="play-button" onclick="console.log('Trailer Park Play Now clicked')">Play Now</a>
+                </div>
+            </div>
+        </section>
+        <section class="mb-28">
+            <h2>Latest Updates</h2>
+            <p class="mt-4">Stay in the loop with our latest developments!</p>
+            <ul class="updates-list">
+                <li><strong>April 30, 2025:</strong> Major update. <em>(Version 2.0.1.5)</em></li>
+                <li><strong>April 29, 2025:</strong> Major update. <em>(Version 1.9.9)</em></li>
+                <li><strong>April 28, 2025:</strong> Website has been released. <em>(Version 1.2.2)</em></li>
+                <li><strong>April 15, 2025:</strong> Start to development website. <em>(Version 1.2.1)</em></li>
+            </ul>
+            <p class="version-info">Current Version: 2.0.1.5 (Updated April 30, 2025)</p>
+        </section>
+        <section class="mb-28">
+            <h2>User Actions</h2>
+            <p class="mt-4">Access login, registration, profile options, and admin controls.</p>
+            <button class="toggle-button" onclick="toggleUserActions()">Show User Actions</button>
+        </section>
+        <section class="mb-28 hidden" id="user-actions">
+            <section class="mb-28">
+                <h2>Login</h2>
+                <p class="mt-4">Log in to post comments or view your profile!</p>
+                <div class="game-card">
+                    <input type="text" id="login-name" class="input-field" placeholder="Enter your name" required>
+                    <input type="password" id="login-password" class="input-field" placeholder="Enter your password" required>
+                    <button class="submit-button" onclick="loginUser()">Login</button>
+                    <button class="submit-button" onclick="logoutUser()">Logout</button>
+                    <p id="login-error" class="error-message"></p>
+                    <p id="login-success" class="success-message"></p>
+                    <p id="login-status" class="success-message"></p>
+                </div>
+            </section>
+            <section class="mb-28">
+                <h2>Register</h2>
+                <p class="mt-4">Join the JML Studio community to leave comments and share your horror experiences!</p>
+                <div class="game-card">
+                    <input type="text" id="reg-name" class="input-field" placeholder="Enter your name" required>
+                    <input type="password" id="reg-password" class="input-field" placeholder="Enter your password" required>
+                    <button class="submit-button" onclick="registerUser()">Register</button>
+                    <p id="reg-error" class="error-message"></p>
+                    <p id="reg-success" class="success-message"></p>
+                </div>
+            </section>
+            <section class="mb-28">
+                <h2>View Profile</h2>
+                <p class="mt-4">Check your profile details and posted comments.</p>
+                <div class="game-card">
+                    <button class="submit-button" onclick="viewProfile()">View Profile</button>
+                    <p id="profile-error" class="error-message"></p>
+                    <div id="profile-info" class="profile-card" style="display: none;"></div>
+                </div>
+            </section>
+            <section class="mb-28">
+                <h2>Grant Admin</h2>
+                <p class="mt-4">Admins can grant admin privileges to other users by their user ID.</p>
+                <div class="game-card">
+                    <input type="text" id="admin-user-id" class="input-field" placeholder="Enter user ID" required>
+                    <button class="admin-button" onclick="grantAdmin()">Grant Admin</button>
+                    <p id="admin-error" class="error-message"></p>
+                    <p id="admin-success" class="success-message"></p>
+                </div>
+            </section>
+        </section>
+        <section class="mb-28">
+            <h2>Community Comments</h2>
+            <p class="mt-4">Share your thoughts and join the horror community! Log in to leave a comment.</p>
+            <div class="game-card">
+                <textarea id="comment-text" class="input-field" placeholder="Your comment" rows="4" required></textarea>
+                <button class="submit-button" onclick="postComment()">Post Comment</button>
+                <p id="comment-error" class="error-message"></p>
+                <p id="comment-success" class="success-message"></p>
+            </div>
+            <div id="comments-list"></div>
+        </section>
+        <section class="behind-section mb-28">
+            <h2>Behind the Screams</h2>
+            <p class="mt-4 typewriter">Crafting retro horror is our passion. We pour our souls into every pixel and sound to recreate that '90s terror. From sketching low-poly models to composing eerie tracks, every step is a love letter to horror.</p>
+        </section>
+        <section class="team-section mb-28">
+            <h2>Meet the Team</h2>
+            <p class="mt-4">The twisted minds behind JML Studio's retro horror masterpieces.</p>
+            <div class="team-grid">
+                <div class="team-card">
+                    <h3 class="game-title verified">
+                        JML Developer
+                        <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="20" cy="20" r="20" fill="#1DA1F2"/>
+                            <path d="M14 24L18 28L26 16" stroke="#fff" stroke-width="4" fill="none"/>
+                        </svg>
+                    </h3>
+                    <p class="game-description">Lead Developer & Horror Visionary</p>
+                </div>
+                <div class="team-card">
+                    <h3 class="game-title">Midev</h3>
+                    <p class="game-description">Art Director & PSX Aesthete</p>
+                </div>
+                <div class="team-card">
+                    <h3 class="game-title">Kip</h3>
+                    <p class="game-description">Sound Designer & Fear Composer</p>
+                </div>
+            </div>
+        </section>
+        <section>
+            <h2>Join the Nightmare</h2>
+            <p class="mt-4">Got a twisted idea or just wanna talk horror? Join our 
+               <a href="https://agamedeveloperstudio.itch.io/" target="_blank" rel="noopener noreferrer" class="link-button" onclick="console.log('Itch.io community clicked')">Itch.io community</a> or chat with us on 
+               <a href="https://discord.gg/quQzQAa2nP" target="_blank" rel="noopener noreferrer" class="link-button" onclick="console.log('Discord clicked')">Discord</a>. 
+               Stay tuned for new releases and creepy updates!</p>
+        </section>
+    </main>
+    <footer>
+        <p>© 2025 JML Studio. All rights reserved.</p>
+        <p class="mt-4">
+            <a href="https://agamedeveloperstudio.itch.io/" target="_blank" rel="noopener noreferrer" class="social-link link-button" onclick="console.log('Footer Itch.io clicked')">Itch.io</a>
+            <a href="https://discord.gg/quQzQAa2nP" target="_blank" rel="noopener noreferrer" class="social-link link-button" onclick="console.log('Footer Discord clicked')">Discord</a>
+        </p>
+    </footer>
+    <script>
+        const INITIAL_ADMIN_ID = 'bba2c578-b753-46d0-80f5-d6606b7e413b';
+
+        // Warn about insecure password storage
+        console.warn('Warning: Passwords are stored in plain text in localStorage. In production, use secure password hashing (e.g., bcrypt).');
+
+        // Generate UUID for user IDs
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        // Safe localStorage access
+        function getLocalStorageItem(key) {
+            try {
+                const item = localStorage.getItem(key);
+                return item ? JSON.parse(item) : null;
+            } catch (e) {
+                console.error(`Error parsing localStorage item ${key}:`, e);
+                return null;
+            }
+        }
+
+        function setLocalStorageItem(key, value) {
+            try {
+                localStorage.setItem(key, JSON.stringify(value));
+            } catch (e) {
+                console.error(`Error setting localStorage item ${key}:`, e);
+            }
+        }
+
+        // Ensure initial admin has admin privileges
+        function ensureInitialAdmin() {
+            let users = getLocalStorageItem('users') || [];
+            if (!Array.isArray(users)) users = [];
+            const adminIndex = users.findIndex(u => u.id === INITIAL_ADMIN_ID);
+            if (adminIndex !== -1 && !users[adminIndex].isAdmin) {
+                users[adminIndex].isAdmin = true;
+                setLocalStorageItem('users', users);
+                console.log(`Admin privileges granted to user with ID ${INITIAL_ADMIN_ID}`);
+            }
+        }
+
+        // Toggle user actions visibility
+        function toggleUserActions() {
+            const userActions = document.getElementById('user-actions');
+            const toggleButton = document.querySelector('.toggle-button');
+            if (!userActions || !toggleButton) return;
+            if (userActions.classList.contains('hidden')) {
+                userActions.classList.remove('hidden');
+                toggleButton.textContent = 'Hide User Actions';
+            } else {
+                userActions.classList.add('hidden');
+                toggleButton.textContent = 'Show User Actions';
+            }
+        }
+
+        // Register a new user
+        function registerUser() {
+            const nameInput = document.getElementById('reg-name');
+            const passwordInput = document.getElementById('reg-password');
+            const error = document.getElementById('reg-error');
+            const success = document.getElementById('reg-success');
+            if (!nameInput || !passwordInput || !error || !success) return;
+
+            const name = nameInput.value.trim();
+            const password = passwordInput.value;
+            error.textContent = '';
+            success.textContent = '';
+
+            if (!name || !password) {
+                error.textContent = 'Name and password are required!';
+                return;
+            }
+
+            let users = getLocalStorageItem('users') || [];
+            if (!Array.isArray(users)) users = [];
+
+            if (users.some(user => user.name === name)) {
+                error.textContent = 'Name already taken!';
+                return;
+            }
+
+            const user = {
+                id: generateUUID(),
+                name: name,
+                password: password,
+                banned: false,
+                isAdmin: user.id === INITIAL_ADMIN_ID
+            };
+
+            users.push(user);
+            setLocalStorageItem('users', users);
+            success.textContent = 'Registration successful! You can now log in.';
+            nameInput.value = '';
+            passwordInput.value = '';
+        }
+
+        // Login a user
+        function loginUser() {
+            const nameInput = document.getElementById('login-name');
+            const passwordInput = document.getElementById('login-password');
+            const error = document.getElementById('login-error');
+            const success = document.getElementById('login-success');
+            const status = document.getElementById('login-status');
+            if (!nameInput || !passwordInput || !error || !success || !status) return;
+
+            const name = nameInput.value.trim();
+            const password = passwordInput.value;
+            error.textContent = '';
+            success.textContent = '';
+            status.textContent = '';
+
+            if (!name || !password) {
+                error.textContent = 'Name and password are required!';
+                return;
+            }
+
+            let users = getLocalStorageItem('users') || [];
+            if (!Array.isArray(users)) users = [];
+
+            const user = users.find(u => u.name === name && u.password === password);
+            if (!user) {
+                error.textContent = 'Invalid name or password!';
+                return;
+            }
+
+            if (user.banned) {
+                error.textContent = 'Your account is banned!';
+                return;
+            }
+
+            // Ensure initial admin has isAdmin set
+            if (user.id === INITIAL_ADMIN_ID && !user.isAdmin) {
+                const userIndex = users.findIndex(u => u.id === user.id);
+                users[userIndex].isAdmin = true;
+                setLocalStorageItem('users', users);
+                user.isAdmin = true;
+            }
+
+            setLocalStorageItem('loggedInUser', user);
+            success.textContent = `Logged in as ${user.name}!`;
+            status.textContent = `Current user: ${user.name}${user.isAdmin ? ' [Admin]' : ''}`;
+            nameInput.value = '';
+            passwordInput.value = '';
+            updateUI();
+        }
+
+        // Logout a user
+        function logoutUser() {
+            const error = document.getElementById('login-error');
+            const success = document.getElementById('login-success');
+            const status = document.getElementById('login-status');
+            const profileInfo = document.getElementById('profile-info');
+            if (!error || !success || !status || !profileInfo) return;
+
+            localStorage.removeItem('loggedInUser');
+            error.textContent = '';
+            success.textContent = '';
+            status.textContent = 'Logged out.';
+            profileInfo.style.display = 'none';
+            updateUI();
+        }
+
+        // Check if user is admin
+        function isAdmin(user) {
+            return user && user.isAdmin === true;
+        }
+
+        // Grant admin privileges
+        function grantAdmin() {
+            const userIdInput = document.getElementById('admin-user-id');
+            const error = document.getElementById('admin-error');
+            const success = document.getElementById('admin-success');
+            if (!userIdInput || !error || !success) return;
+
+            const userId = userIdInput.value.trim();
+            error.textContent = '';
+            success.textContent = '';
+
+            const loggedInUser = getLocalStorageItem('loggedInUser');
+            if (!loggedInUser || !isAdmin(loggedInUser)) {
+                error.textContent = 'Only admins can grant admin privileges!';
+                return;
+            }
+
+            if (!userId) {
+                error.textContent = 'User ID is required!';
+                return;
+            }
+
+            let users = getLocalStorageItem('users') || [];
+            if (!Array.isArray(users)) users = [];
+
+            const userIndex = users.findIndex(u => u.id === userId);
+            if (userIndex === -1) {
+                error.textContent = 'User not found!';
+                return;
+            }
+
+            if (users[userIndex].isAdmin) {
+                error.textContent = 'User is already an admin!';
+                return;
+            }
+
+            users[userIndex].isAdmin = true;
+            setLocalStorageItem('users', users);
+            success.textContent = `Admin privileges granted to ${users[userIndex].name} (ID: ${userId})!`;
+            userIdInput.value = '';
+            updateUI();
+        }
+
+        // Ban a user
+        function banUser(userId) {
+            let users = getLocalStorageItem('users') || [];
+            if (!Array.isArray(users)) users = [];
+            const userIndex = users.findIndex(u => u.id === userId);
+            if (userIndex !== -1) {
+                if (users[userIndex].id === INITIAL_ADMIN_ID) {
+                    alert('Cannot ban the initial admin!');
+                    return;
+                }
+                users[userIndex].banned = true;
+                setLocalStorageItem('users', users);
+                alert('User banned successfully!');
+                updateUI();
+            }
+        }
+
+        // Delete a comment
+        function deleteComment(commentId) {
+            let comments = getLocalStorageItem('comments') || [];
+            if (!Array.isArray(comments)) comments = [];
+            comments = comments.filter(c => c.id !== commentId);
+            setLocalStorageItem('comments', comments);
+            alert('Comment deleted successfully!');
+            updateUI();
+        }
+
+        // Show reply input panel
+        function showReplyInput(commentId) {
+            const loggedInUser = getLocalStorageItem('loggedInUser');
+            if (!isAdmin(loggedInUser)) {
+                alert('Only admins can reply to comments!');
+                return;
+            }
+
+            const existingPanel = document.getElementById(`reply-panel-${commentId}`);
+            if (existingPanel) {
+                existingPanel.remove();
+                return;
+            }
+
+            const replyPanel = document.createElement('div');
+            replyPanel.id = `reply-panel-${commentId}`;
+            replyPanel.className = 'reply-input-panel';
+            replyPanel.innerHTML = `
+                <textarea id="reply-text-${commentId}" class="input-field" placeholder="Your reply" rows="3"></textarea>
+                <button class="admin-button" onclick="submitReply('${commentId}')">Submit Reply</button>
+                <button class="admin-button" onclick="cancelReply('${commentId}')">Cancel</button>
+                <p id="reply-error-${commentId}" class="error-message"></p>
+            `;
+
+            const commentCard = document.querySelector(`.comment-card[data-comment-id="${commentId}"]`);
+            if (commentCard) {
+                commentCard.appendChild(replyPanel);
+            }
+        }
+
+        // Submit a reply
+        function submitReply(commentId) {
+            const replyTextArea = document.getElementById(`reply-text-${commentId}`);
+            const error = document.getElementById(`reply-error-${commentId}`);
+            if (!replyTextArea || !error) return;
+
+            const replyText = replyTextArea.value.trim();
+            error.textContent = '';
+            if (!replyText) {
+                error.textContent = 'Reply text is required!';
+                return;
+            }
+
+            const loggedInUser = getLocalStorageItem('loggedInUser');
+            let comments = getLocalStorageItem('comments') || [];
+            if (!Array.isArray(comments)) comments = [];
+
+            const comment = comments.find(c => c.id === commentId);
+            if (comment) {
+                if (!comment.replies) comment.replies = [];
+                comment.replies.push({
+                    id: generateUUID(),
+                    userId: loggedInUser.id,
+                    name: loggedInUser.name,
+                    text: replyText,
+                    timestamp: new Date().toISOString()
+                });
+                setLocalStorageItem('comments', comments);
+                alert('Reply posted successfully!');
+                updateUI();
+            }
+        }
+
+        // Cancel reply
+        function cancelReply(commentId) {
+            const replyPanel = document.getElementById(`reply-panel-${commentId}`);
+            if (replyPanel) {
+                replyPanel.remove();
+            }
+        }
+
+        // Post a comment
+        function postComment() {
+            const textArea = document.getElementById('comment-text');
+            const error = document.getElementById('comment-error');
+            const success = document.getElementById('comment-success');
+            if (!textArea || !error || !success) return;
+
+            const text = textArea.value.trim();
+            error.textContent = '';
+            success.textContent = '';
+
+            if (!text) {
+                error.textContent = 'Comment text is required!';
+                return;
+            }
+
+            const loggedInUser = getLocalStorageItem('loggedInUser');
+            if (!loggedInUser) {
+                error.textContent = 'You must be logged in to post a comment!';
+                return;
+            }
+
+            if (loggedInUser.banned) {
+                error.textContent = 'You are banned from posting comments!';
+                return;
+            }
+
+            let comments = getLocalStorageItem('comments') || [];
+            if (!Array.isArray(comments)) comments = [];
+
+            comments.push({
+                id: generateUUID(),
+                userId: loggedInUser.id,
+                name: loggedInUser.name,
+                text: text,
+                timestamp: new Date().toISOString(),
+                replies: []
+            });
+
+            setLocalStorageItem('comments', comments);
+            success.textContent = 'Comment posted successfully!';
+            textArea.value = '';
+            updateUI();
+        }
+
+        // Display comments
+        function displayComments() {
+            const commentsList = document.getElementById('comments-list');
+            if (!commentsList) return;
+
+            const comments = getLocalStorageItem('comments') || [];
+            const loggedInUser = getLocalStorageItem('loggedInUser');
+            const users = getLocalStorageItem('users') || [];
+            if (!Array.isArray(comments) || !Array.isArray(users)) return;
+
+            console.log('Rendering comments, loggedInUser:', loggedInUser ? loggedInUser.name : 'None', 'isAdmin:', loggedInUser ? isAdmin(loggedInUser) : false);
+
+            commentsList.innerHTML = '';
+            comments.forEach(comment => {
+                const commentUser = users.find(u => u.id === comment.userId);
+                const isCommentAdmin = commentUser && commentUser.isAdmin;
+                const adminCheckmark = isCommentAdmin ? '<svg class="admin-checkmark" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="#1DA1F2"/></svg>' : '';
+                const adminTag = isCommentAdmin ? '<span class="admin-tag">[Admin]</span>' : '';
+                let adminControls = '';
+
+                if (loggedInUser && isAdmin(loggedInUser)) {
+                    adminControls = `
+                        <button class="admin-button" onclick="banUser('${comment.userId}')">Ban User</button>
+                        <button class="admin-button" onclick="deleteComment('${comment.id}')">Delete Comment</button>
+                        <button class="admin-button" onclick="showReplyInput('${comment.id}')">Reply</button>
+                    `;
+                    console.log(`Admin controls added for comment ${comment.id} by ${comment.name}`);
+                }
+
+                const repliesHTML = comment.replies && comment.replies.length > 0
+                    ? comment.replies.map(reply => {
+                        const replyUser = users.find(u => u.id === reply.userId);
+                        const isReplyAdmin = replyUser && replyUser.isAdmin;
+                        const replyCheckmark = isReplyAdmin ? '<svg class="admin-checkmark" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="#1DA1F2"/></svg>' : '';
+                        const replyTag = isReplyAdmin ? '<span class="admin-tag">[Admin]</span>' : '';
+                        return `
+                            <div class="admin-reply-card">
+                                <p class="comment-author">${reply.name}${replyCheckmark}${replyTag}</p>
+                                <p class="comment-text">${reply.text}</p>
+                                <p class="comment-text timestamp">Posted on ${new Date(reply.timestamp).toLocaleString()}</p>
+                            </div>
+                        `;
+                    }).join('')
+                    : '';
+
+                const commentCard = document.createElement('div');
+                commentCard.className = 'comment-card';
+                commentCard.setAttribute('data-comment-id', comment.id);
+                commentCard.innerHTML = `
+                    <p class="comment-author">${comment.name}${adminCheckmark}${adminTag}</p>
+                    <p class="comment-text">${comment.text}</p>
+                    <p class="comment-text" style="font-size: 1.4em; color: #999;">Posted on ${new Date(comment.timestamp).toLocaleString()}</p>
+                    ${adminControls}
+                    ${repliesHTML}
+                `;
+                commentsList.appendChild(commentCard);
+            });
+        }
+
+        // View user profile
+        function viewProfile() {
+            const error = document.getElementById('profile-error');
+            const profileInfo = document.getElementById('profile-info');
+            if (!error || !profileInfo) return;
+
+            error.textContent = '';
+            profileInfo.style.display = 'none';
+
+            const loggedInUser = getLocalStorageItem('loggedInUser');
+            if (!loggedInUser) {
+                error.textContent = 'You must be logged in to view your profile!';
+                return;
+            }
+
+            const isUserAdmin = isAdmin(loggedInUser);
+            const adminCheckmark = isUserAdmin ? '<svg class="admin-checkmark" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="#1DA1F2"/></svg>' : '';
+            const adminTag = isUserAdmin ? '<span class="admin-tag">[Admin]</span>' : '';
+
+            const comments = getLocalStorageItem('comments') || [];
+            if (!Array.isArray(comments)) comments = [];
+
+            const userComments = comments.filter(comment => comment.userId === loggedInUser.id);
+            let commentsHTML = '<p class="profile-text">No comments posted yet.</p>';
+            if (userComments.length > 0) {
+                commentsHTML = userComments.map(comment => `
+                    <div class="comment-card">
+                        <p class="comment-text">${comment.text}</p>
+                        <p class="comment-text" style="font-size: 1.4em; color: #999;">Posted on ${new Date(comment.timestamp).toLocaleString()}</p>
+                    </div>
+                `).join('');
+            }
+
+            profileInfo.innerHTML = `
+                <p class="profile-title">${loggedInUser.name}${adminCheckmark}${adminTag}</p>
+                <p class="profile-text">User ID: ${loggedInUser.id}</p>
+                <p class="profile-text">Status: ${loggedInUser.banned ? 'Banned' : 'Active'}</p>
+                <p class="profile-text">Admin: ${isUserAdmin ? 'Yes' : 'No'}</p>
+                <p class="profile-text">Comments Posted:</p>
+                ${commentsHTML}
+            `;
+            profileInfo.style.display = 'block';
+        }
+
+        // Update UI based on login state
+        function updateUI() {
+            const loggedInUser = getLocalStorageItem('loggedInUser');
+            const status = document.getElementById('login-status');
+            if (status) {
+                status.textContent = loggedInUser ? `Current user: ${loggedInUser.name}${loggedInUser.isAdmin ? ' [Admin]' : ''}` : 'Not logged in.';
+            }
+            displayComments();
+        }
+
+        // Load comments and UI on page load
+        window.onload = function() {
+            if (!window.localStorage) {
+                console.error('localStorage is not available. Functionality will be limited.');
+                return;
+            }
+            ensureInitialAdmin();
+            updateUI();
+        };
+    </script>
+</body>
+</html>
