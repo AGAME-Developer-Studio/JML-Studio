@@ -1,3 +1,5 @@
+СУКА! НУ ПЕРЕПИШИ ЭТОТ КОД
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -93,7 +95,6 @@
             cursor: pointer;
             position: relative;
             z-index: 10;
-            font-size: 1.6em;
         }
         .link-button:hover, .play-button:hover, .submit-button:hover, .admin-button:hover, .toggle-button:hover {
             background: linear-gradient(45deg, #00cccc, #00b7eb);
@@ -109,11 +110,8 @@
             border-color: #ff0000;
             color: #ff0000;
             box-shadow: 0 0 25px #ff0000;
-            background: linear-gradient(45deg, rgba(255, 0, 0, 0.35), rgba(60, 0, 0, 0.35));
         }
         .admin-button:hover {
-            background: linear-gradient(45deg, #ff0000, #cc0000);
-            color: #fff;
             box-shadow: 0 0 50px #ff0000;
         }
         .game-grid {
@@ -257,6 +255,7 @@
         .admin-checkmark {
             width: 24px;
             height: 24px;
+            margin-left: 8px;
             filter: drop-shadow(0 0 10px #1DA1F2);
             animation: checkPulse 1.5s infinite;
             vertical-align: middle;
@@ -302,13 +301,11 @@
             text-shadow: 0 0 15px #ff00cc;
             display: inline-flex;
             align-items: center;
-            flex-wrap: nowrap;
-            gap: 6px;
         }
         .admin-tag {
             color: #ff0000;
             text-shadow: 0 0 10px #ff0000;
-            font-size: 1.8em;
+            margin-left: 10px;
         }
         .comment-text, .profile-text {
             font-size: 1.6em;
@@ -317,13 +314,6 @@
             text-shadow: 0 0 3px #fff;
         }
         .admin-reply-card .comment-author {
-            font-size: 1.4em;
-            display: inline-flex;
-            align-items: center;
-            flex-wrap: nowrap;
-            gap: 4px;
-        }
-        .admin-reply-card .admin-tag {
             font-size: 1.4em;
         }
         .admin-reply-card .comment-text {
@@ -416,14 +406,7 @@
             .behind-section { padding: 30px; }
             .verified svg { width: 36px; height: 36px; }
             .admin-checkmark { width: 20px; height: 20px; }
-            .link-button, .play-button, .submit-button, .admin-button, .toggle-button { 
-                padding: 16px 32px;
-                font-size: 1.4em;
-            }
-            .comment-author, .profile-title { font-size: 1.6em; }
-            .admin-tag { font-size: 1.6em; }
-            .admin-reply-card .comment-author { font-size: 1.2em; }
-            .admin-reply-card .admin-tag { font-size: 1.2em; }
+            .link-button, .play-button, .submit-button, .admin-button, .toggle-button { padding: 16px 32px; }
         }
     </style>
 </head>
@@ -579,9 +562,6 @@
     <script>
         const INITIAL_ADMIN_ID = 'bba2c578-b753-46d0-80f5-d6606b7e413b';
 
-        // Warn about insecure password storage
-        console.warn('Warning: Passwords are stored in plain text in localStorage. In production, use secure password hashing (e.g., bcrypt).');
-
         // Generate UUID for user IDs
         function generateUUID() {
             return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -590,42 +570,10 @@
             });
         }
 
-        // Safe localStorage access
-        function getLocalStorageItem(key) {
-            try {
-                const item = localStorage.getItem(key);
-                return item ? JSON.parse(item) : null;
-            } catch (e) {
-                console.error(`Error parsing localStorage item ${key}:`, e);
-                return null;
-            }
-        }
-
-        function setLocalStorageItem(key, value) {
-            try {
-                localStorage.setItem(key, JSON.stringify(value));
-            } catch (e) {
-                console.error(`Error setting localStorage item ${key}:`, e);
-            }
-        }
-
-        // Ensure initial admin has admin privileges
-        function ensureInitialAdmin() {
-            let users = getLocalStorageItem('users') || [];
-            if (!Array.isArray(users)) users = [];
-            const adminIndex = users.findIndex(u => u.id === INITIAL_ADMIN_ID);
-            if (adminIndex !== -1 && !users[adminIndex].isAdmin) {
-                users[adminIndex].isAdmin = true;
-                setLocalStorageItem('users', users);
-                console.log(`Admin privileges granted to user with ID ${INITIAL_ADMIN_ID}`);
-            }
-        }
-
         // Toggle user actions visibility
         function toggleUserActions() {
             const userActions = document.getElementById('user-actions');
             const toggleButton = document.querySelector('.toggle-button');
-            if (!userActions || !toggleButton) return;
             if (userActions.classList.contains('hidden')) {
                 userActions.classList.remove('hidden');
                 toggleButton.textContent = 'Hide User Actions';
@@ -637,14 +585,11 @@
 
         // Register a new user
         function registerUser() {
-            const nameInput = document.getElementById('reg-name');
-            const passwordInput = document.getElementById('reg-password');
+            const name = document.getElementById('reg-name').value.trim();
+            const password = document.getElementById('reg-password').value;
             const error = document.getElementById('reg-error');
             const success = document.getElementById('reg-success');
-            if (!nameInput || !passwordInput || !error || !success) return;
 
-            const name = nameInput.value.trim();
-            const password = passwordInput.value;
             error.textContent = '';
             success.textContent = '';
 
@@ -653,9 +598,7 @@
                 return;
             }
 
-            let users = getLocalStorageItem('users') || [];
-            if (!Array.isArray(users)) users = [];
-
+            let users = JSON.parse(localStorage.getItem('users')) || [];
             if (users.some(user => user.name === name)) {
                 error.textContent = 'Name already taken!';
                 return;
@@ -664,29 +607,26 @@
             const user = {
                 id: generateUUID(),
                 name: name,
-                password: password,
+                password: password, // Note: In production, hash the password
                 banned: false,
                 isAdmin: user.id === INITIAL_ADMIN_ID
             };
 
             users.push(user);
-            setLocalStorageItem('users', users);
+            localStorage.setItem('users', JSON.stringify(users));
             success.textContent = 'Registration successful! You can now log in.';
-            nameInput.value = '';
-            passwordInput.value = '';
+            document.getElementById('reg-name').value = '';
+            document.getElementById('reg-password').value = '';
         }
 
         // Login a user
         function loginUser() {
-            const nameInput = document.getElementById('login-name');
-            const passwordInput = document.getElementById('login-password');
+            const name = document.getElementById('login-name').value.trim();
+            const password = document.getElementById('login-password').value;
             const error = document.getElementById('login-error');
             const success = document.getElementById('login-success');
             const status = document.getElementById('login-status');
-            if (!nameInput || !passwordInput || !error || !success || !status) return;
 
-            const name = nameInput.value.trim();
-            const password = passwordInput.value;
             error.textContent = '';
             success.textContent = '';
             status.textContent = '';
@@ -696,10 +636,9 @@
                 return;
             }
 
-            let users = getLocalStorageItem('users') || [];
-            if (!Array.isArray(users)) users = [];
-
+            let users = JSON.parse(localStorage.getItem('users')) || [];
             const user = users.find(u => u.name === name && u.password === password);
+
             if (!user) {
                 error.textContent = 'Invalid name or password!';
                 return;
@@ -714,31 +653,25 @@
             if (user.id === INITIAL_ADMIN_ID && !user.isAdmin) {
                 const userIndex = users.findIndex(u => u.id === user.id);
                 users[userIndex].isAdmin = true;
-                setLocalStorageItem('users', users);
+                localStorage.setItem('users', JSON.stringify(users));
                 user.isAdmin = true;
             }
 
-            setLocalStorageItem('loggedInUser', user);
+            localStorage.setItem('loggedInUser', JSON.stringify(user));
             success.textContent = `Logged in as ${user.name}!`;
-            status.textContent = `Current user: ${user.name}${user.isAdmin ? ' [Admin]' : ''}`;
-            nameInput.value = '';
-            passwordInput.value = '';
+            status.textContent = `Current user: ${user.name}`;
+            document.getElementById('login-name').value = '';
+            document.getElementById('login-password').value = '';
             updateUI();
         }
 
         // Logout a user
         function logoutUser() {
-            const error = document.getElementById('login-error');
-            const success = document.getElementById('login-success');
-            const status = document.getElementById('login-status');
-            const profileInfo = document.getElementById('profile-info');
-            if (!error || !success || !status || !profileInfo) return;
-
             localStorage.removeItem('loggedInUser');
-            error.textContent = '';
-            success.textContent = '';
-            status.textContent = 'Logged out.';
-            profileInfo.style.display = 'none';
+            document.getElementById('login-error').textContent = '';
+            document.getElementById('login-success').textContent = '';
+            document.getElementById('login-status').textContent = 'Logged out.';
+            document.getElementById('profile-info').style.display = 'none';
             updateUI();
         }
 
@@ -749,16 +682,14 @@
 
         // Grant admin privileges
         function grantAdmin() {
-            const userIdInput = document.getElementById('admin-user-id');
+            const userId = document.getElementById('admin-user-id').value.trim();
             const error = document.getElementById('admin-error');
             const success = document.getElementById('admin-success');
-            if (!userIdInput || !error || !success) return;
 
-            const userId = userIdInput.value.trim();
             error.textContent = '';
             success.textContent = '';
 
-            const loggedInUser = getLocalStorageItem('loggedInUser');
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
             if (!loggedInUser || !isAdmin(loggedInUser)) {
                 error.textContent = 'Only admins can grant admin privileges!';
                 return;
@@ -769,9 +700,7 @@
                 return;
             }
 
-            let users = getLocalStorageItem('users') || [];
-            if (!Array.isArray(users)) users = [];
-
+            let users = JSON.parse(localStorage.getItem('users')) || [];
             const userIndex = users.findIndex(u => u.id === userId);
             if (userIndex === -1) {
                 error.textContent = 'User not found!';
@@ -784,24 +713,19 @@
             }
 
             users[userIndex].isAdmin = true;
-            setLocalStorageItem('users', users);
-            success.textContent = `Admin privileges granted to ${users[userIndex].name} (ID: ${userId})!`;
-            userIdInput.value = '';
+            localStorage.setItem('users', JSON.stringify(users));
+            success.textContent = 'Admin privileges granted successfully!';
+            document.getElementById('admin-user-id').value = '';
             updateUI();
         }
 
         // Ban a user
         function banUser(userId) {
-            let users = getLocalStorageItem('users') || [];
-            if (!Array.isArray(users)) users = [];
+            let users = JSON.parse(localStorage.getItem('users')) || [];
             const userIndex = users.findIndex(u => u.id === userId);
             if (userIndex !== -1) {
-                if (users[userIndex].id === INITIAL_ADMIN_ID) {
-                    alert('Cannot ban the initial admin!');
-                    return;
-                }
                 users[userIndex].banned = true;
-                setLocalStorageItem('users', users);
+                localStorage.setItem('users', JSON.stringify(users));
                 alert('User banned successfully!');
                 updateUI();
             }
@@ -809,17 +733,15 @@
 
         // Delete a comment
         function deleteComment(commentId) {
-            let comments = getLocalStorageItem('comments') || [];
-            if (!Array.isArray(comments)) comments = [];
+            let comments = JSON.parse(localStorage.getItem('comments')) || [];
             comments = comments.filter(c => c.id !== commentId);
-            setLocalStorageItem('comments', comments);
-            alert('Comment deleted successfully!');
+            localStorage.setItem('comments', JSON.stringify(comments));
             updateUI();
         }
 
         // Show reply input panel
         function showReplyInput(commentId) {
-            const loggedInUser = getLocalStorageItem('loggedInUser');
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
             if (!isAdmin(loggedInUser)) {
                 alert('Only admins can reply to comments!');
                 return;
@@ -842,28 +764,22 @@
             `;
 
             const commentCard = document.querySelector(`.comment-card[data-comment-id="${commentId}"]`);
-            if (commentCard) {
-                commentCard.appendChild(replyPanel);
-            }
+            commentCard.appendChild(replyPanel);
         }
 
         // Submit a reply
         function submitReply(commentId) {
-            const replyTextArea = document.getElementById(`reply-text-${commentId}`);
+            const replyText = document.getElementById(`reply-text-${commentId}`).value.trim();
             const error = document.getElementById(`reply-error-${commentId}`);
-            if (!replyTextArea || !error) return;
 
-            const replyText = replyTextArea.value.trim();
             error.textContent = '';
             if (!replyText) {
                 error.textContent = 'Reply text is required!';
                 return;
             }
 
-            const loggedInUser = getLocalStorageItem('loggedInUser');
-            let comments = getLocalStorageItem('comments') || [];
-            if (!Array.isArray(comments)) comments = [];
-
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+            let comments = JSON.parse(localStorage.getItem('comments')) || [];
             const comment = comments.find(c => c.id === commentId);
             if (comment) {
                 if (!comment.replies) comment.replies = [];
@@ -874,8 +790,7 @@
                     text: replyText,
                     timestamp: new Date().toISOString()
                 });
-                setLocalStorageItem('comments', comments);
-                alert('Reply posted successfully!');
+                localStorage.setItem('comments', JSON.stringify(comments));
                 updateUI();
             }
         }
@@ -890,12 +805,10 @@
 
         // Post a comment
         function postComment() {
-            const textArea = document.getElementById('comment-text');
+            const text = document.getElementById('comment-text').value.trim();
             const error = document.getElementById('comment-error');
             const success = document.getElementById('comment-success');
-            if (!textArea || !error || !success) return;
 
-            const text = textArea.value.trim();
             error.textContent = '';
             success.textContent = '';
 
@@ -904,7 +817,7 @@
                 return;
             }
 
-            const loggedInUser = getLocalStorageItem('loggedInUser');
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
             if (!loggedInUser) {
                 error.textContent = 'You must be logged in to post a comment!';
                 return;
@@ -915,9 +828,7 @@
                 return;
             }
 
-            let comments = getLocalStorageItem('comments') || [];
-            if (!Array.isArray(comments)) comments = [];
-
+            let comments = JSON.parse(localStorage.getItem('comments')) || [];
             comments.push({
                 id: generateUUID(),
                 userId: loggedInUser.id,
@@ -927,28 +838,23 @@
                 replies: []
             });
 
-            setLocalStorageItem('comments', comments);
+            localStorage.setItem('comments', JSON.stringify(comments));
             success.textContent = 'Comment posted successfully!';
-            textArea.value = '';
+            document.getElementById('comment-text').value = '';
             updateUI();
         }
 
         // Display comments
         function displayComments() {
             const commentsList = document.getElementById('comments-list');
-            if (!commentsList) return;
-
-            const comments = getLocalStorageItem('comments') || [];
-            const loggedInUser = getLocalStorageItem('loggedInUser');
-            const users = getLocalStorageItem('users') || [];
-            if (!Array.isArray(comments) || !Array.isArray(users)) return;
-
-            console.log('Rendering comments, loggedInUser:', loggedInUser ? loggedInUser.name : 'None', 'isAdmin:', loggedInUser ? isAdmin(loggedInUser) : false);
+            const comments = JSON.parse(localStorage.getItem('comments')) || [];
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+            const users = JSON.parse(localStorage.getItem('users')) || [];
 
             commentsList.innerHTML = '';
             comments.forEach(comment => {
-                const commentUser = users.find(u => u.id === comment.userId);
-                const isCommentAdmin = commentUser && commentUser.isAdmin;
+                const user = users.find(u => u.id === comment.userId);
+                const isCommentAdmin = user && user.isAdmin;
                 const adminCheckmark = isCommentAdmin ? '<svg class="admin-checkmark" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="#1DA1F2"/></svg>' : '';
                 const adminTag = isCommentAdmin ? '<span class="admin-tag">[Admin]</span>' : '';
                 let adminControls = '';
@@ -959,7 +865,6 @@
                         <button class="admin-button" onclick="deleteComment('${comment.id}')">Delete Comment</button>
                         <button class="admin-button" onclick="showReplyInput('${comment.id}')">Reply</button>
                     `;
-                    console.log(`Admin controls added for comment ${comment.id} by ${comment.name}`);
                 }
 
                 const repliesHTML = comment.replies && comment.replies.length > 0
@@ -970,7 +875,7 @@
                         const replyTag = isReplyAdmin ? '<span class="admin-tag">[Admin]</span>' : '';
                         return `
                             <div class="admin-reply-card">
-                                <p class="comment-author">${reply.name}${replyCheckmark}${replyTag}</p>
+                                <p class="comment-author">${reply.name} ${replyCheckmark}${replyTag}</p>
                                 <p class="comment-text">${reply.text}</p>
                                 <p class="comment-text timestamp">Posted on ${new Date(reply.timestamp).toLocaleString()}</p>
                             </div>
@@ -982,7 +887,7 @@
                 commentCard.className = 'comment-card';
                 commentCard.setAttribute('data-comment-id', comment.id);
                 commentCard.innerHTML = `
-                    <p class="comment-author">${comment.name}${adminCheckmark}${adminTag}</p>
+                    <p class="comment-author">${comment.name} ${adminCheckmark}${adminTag}</p>
                     <p class="comment-text">${comment.text}</p>
                     <p class="comment-text" style="font-size: 1.4em; color: #999;">Posted on ${new Date(comment.timestamp).toLocaleString()}</p>
                     ${adminControls}
@@ -996,12 +901,11 @@
         function viewProfile() {
             const error = document.getElementById('profile-error');
             const profileInfo = document.getElementById('profile-info');
-            if (!error || !profileInfo) return;
 
             error.textContent = '';
             profileInfo.style.display = 'none';
 
-            const loggedInUser = getLocalStorageItem('loggedInUser');
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
             if (!loggedInUser) {
                 error.textContent = 'You must be logged in to view your profile!';
                 return;
@@ -1011,10 +915,9 @@
             const adminCheckmark = isUserAdmin ? '<svg class="admin-checkmark" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="#1DA1F2"/></svg>' : '';
             const adminTag = isUserAdmin ? '<span class="admin-tag">[Admin]</span>' : '';
 
-            const comments = getLocalStorageItem('comments') || [];
-            if (!Array.isArray(comments)) comments = [];
-
+            const comments = JSON.parse(localStorage.getItem('comments')) || [];
             const userComments = comments.filter(comment => comment.userId === loggedInUser.id);
+
             let commentsHTML = '<p class="profile-text">No comments posted yet.</p>';
             if (userComments.length > 0) {
                 commentsHTML = userComments.map(comment => `
@@ -1026,10 +929,10 @@
             }
 
             profileInfo.innerHTML = `
-                <p class="profile-title">${loggedInUser.name}${adminCheckmark}${adminTag}</p>
+                <p class="profile-title">${loggedInUser.name} ${adminCheckmark}${adminTag}</p>
                 <p class="profile-text">User ID: ${loggedInUser.id}</p>
                 <p class="profile-text">Status: ${loggedInUser.banned ? 'Banned' : 'Active'}</p>
-                <p class="profile-text">Admin: ${isUserAdmin ? 'Yes' : 'No'}</p>
+                <p class="profile-text">Admin: ${isAdmin(loggedInUser) ? 'Yes' : 'No'}</p>
                 <p class="profile-text">Comments Posted:</p>
                 ${commentsHTML}
             `;
@@ -1038,23 +941,18 @@
 
         // Update UI based on login state
         function updateUI() {
-            const loggedInUser = getLocalStorageItem('loggedInUser');
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
             const status = document.getElementById('login-status');
-            if (status) {
-                status.textContent = loggedInUser ? `Current user: ${loggedInUser.name}${loggedInUser.isAdmin ? ' [Admin]' : ''}` : 'Not logged in.';
+            if (loggedInUser) {
+                status.textContent = `Current user: ${loggedInUser.name}`;
+            } else {
+                status.textContent = 'Not logged in.';
             }
             displayComments();
         }
 
         // Load comments and UI on page load
-        window.onload = function() {
-            if (!window.localStorage) {
-                console.error('localStorage is not available. Functionality will be limited.');
-                return;
-            }
-            ensureInitialAdmin();
-            updateUI();
-        };
+        window.onload = updateUI;
     </script>
 </body>
 </html>
