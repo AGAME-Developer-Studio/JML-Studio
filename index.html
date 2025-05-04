@@ -1,5 +1,3 @@
-СУКА! НУ ПЕРЕПИШИ ЭТОТ КОД
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -80,7 +78,7 @@
             line-height: 2.1;
             text-shadow: 0 0 3px #fff;
         }
-        .link-button, .play-button, .submit-button, .admin-button, .toggle-button {
+        .link-button, .play-button {
             display: inline-block;
             padding: 18px 36px;
             margin: 12px;
@@ -96,23 +94,15 @@
             position: relative;
             z-index: 10;
         }
-        .link-button:hover, .play-button:hover, .submit-button:hover, .admin-button:hover, .toggle-button:hover {
+        .link-button:hover, .play-button:hover {
             background: linear-gradient(45deg, #00cccc, #00b7eb);
             color: #000;
             box-shadow: 0 0 50px #00cccc;
             transform: scale(1.1);
         }
-        .link-button:active, .play-button:active, .submit-button:active, .admin-button:active, .toggle-button:active {
+        .link-button:active, .play-button:active {
             transform: scale(0.95);
             box-shadow: 0 0 15px #00cccc;
-        }
-        .admin-button {
-            border-color: #ff0000;
-            color: #ff0000;
-            box-shadow: 0 0 25px #ff0000;
-        }
-        .admin-button:hover {
-            box-shadow: 0 0 50px #ff0000;
         }
         .game-grid {
             display: grid;
@@ -252,99 +242,6 @@
         .verified:hover svg {
             transform: scale(1.1);
         }
-        .admin-checkmark {
-            width: 24px;
-            height: 24px;
-            margin-left: 8px;
-            filter: drop-shadow(0 0 10px #1DA1F2);
-            animation: checkPulse 1.5s infinite;
-            vertical-align: middle;
-        }
-        .input-field {
-            width: 100%;
-            padding: 14px;
-            margin: 12px 0;
-            border: 4px solid #33ff33;
-            background: rgba(0, 0, 0, 0.7);
-            color: #33ff33;
-            font-family: 'VT323', monospace;
-            font-size: 1.6em;
-            border-radius: 8px;
-            box-shadow: 0 0 20px #33ff33;
-            outline: none;
-            transition: all 0.3s ease-in-out;
-        }
-        .input-field:focus {
-            border-color: #ff00cc;
-            box-shadow: 0 0 30px #ff00cc;
-        }
-        .comment-card, .profile-card {
-            border: 5px solid #33ff33;
-            padding: 25px;
-            margin: 20px 0;
-            background: linear-gradient(135deg, rgba(0, 35, 0, 0.94), rgba(10, 10, 10, 0.92));
-            box-shadow: 0 0 30px #33ff33;
-            border-radius: 12px;
-        }
-        .admin-reply-card {
-            margin-left: 20px;
-            border: 2px solid #ff00cc;
-            padding: 10px;
-            margin-top: 10px;
-            background: linear-gradient(135deg, rgba(0, 35, 0, 0.94), rgba(10, 10, 10, 0.92));
-            box-shadow: 0 0 15px #ff00cc;
-            border-radius: 6px;
-        }
-        .comment-author, .profile-title {
-            font-size: 1.8em;
-            color: #ff00cc;
-            text-shadow: 0 0 15px #ff00cc;
-            display: inline-flex;
-            align-items: center;
-        }
-        .admin-tag {
-            color: #ff0000;
-            text-shadow: 0 0 10px #ff0000;
-            margin-left: 10px;
-        }
-        .comment-text, .profile-text {
-            font-size: 1.6em;
-            color: #e0e0e0;
-            margin-top: 10px;
-            text-shadow: 0 0 3px #fff;
-        }
-        .admin-reply-card .comment-author {
-            font-size: 1.4em;
-        }
-        .admin-reply-card .comment-text {
-            font-size: 1.3em;
-        }
-        .admin-reply-card .comment-text.timestamp {
-            font-size: 1.1em;
-            color: #999;
-        }
-        .reply-input-panel {
-            margin-top: 15px;
-            padding: 15px;
-            border: 3px solid #ff00cc;
-            background: rgba(10, 0, 10, 0.9);
-            border-radius: 8px;
-        }
-        .error-message {
-            color: #ff0000;
-            font-size: 1.6em;
-            text-shadow: 0 0 10px #ff0000;
-            margin: 10px 0;
-        }
-        .success-message {
-            color: #33ff33;
-            font-size: 1.6em;
-            text-shadow: 0 0 10px #33ff33;
-            margin: 10px 0;
-        }
-        .hidden {
-            display: none;
-        }
         footer {
             text-align: center;
             margin-top: 90px;
@@ -382,9 +279,9 @@
             100% { filter: drop-shadow(0 0 35px #33ff33); }
         }
         @keyframes checkPulse {
-            0% { transform: scale(1); filter: drop-shadow(0 0 10px #1DA1F2); }
-            50% { transform: scale(1.05); filter: drop-shadow(0 0 15px #1DA1F2); }
-            100% { transform: scale(1); filter: drop-shadow(0 0 10px #1DA1F2); }
+            0% { transform: scale(1); filter: drop-shadow(0 0 20px #1DA1F2); }
+            50% { transform: scale(1.05); filter: drop-shadow(0 0 25px #1DA1F2); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 20px #1DA1F2); }
         }
         @keyframes typing {
             from { width: 0; }
@@ -405,8 +302,7 @@
             .team-grid { grid-template-columns: 1fr; }
             .behind-section { padding: 30px; }
             .verified svg { width: 36px; height: 36px; }
-            .admin-checkmark { width: 20px; height: 20px; }
-            .link-button, .play-button, .submit-button, .admin-button, .toggle-button { padding: 16px 32px; }
+            .link-button, .play-button { padding: 16px 32px; }
         }
     </style>
 </head>
@@ -455,67 +351,6 @@
             </ul>
             <p class="version-info">Current Version: 2.0.1.5 (Updated April 30, 2025)</p>
         </section>
-        <section class="mb-28">
-            <h2>User Actions</h2>
-            <p class="mt-4">Access login, registration, profile options, and admin controls.</p>
-            <button class="toggle-button" onclick="toggleUserActions()">Show User Actions</button>
-        </section>
-        <section class="mb-28 hidden" id="user-actions">
-            <section class="mb-28">
-                <h2>Login</h2>
-                <p class="mt-4">Log in to post comments or view your profile!</p>
-                <div class="game-card">
-                    <input type="text" id="login-name" class="input-field" placeholder="Enter your name" required>
-                    <input type="password" id="login-password" class="input-field" placeholder="Enter your password" required>
-                    <button class="submit-button" onclick="loginUser()">Login</button>
-                    <button class="submit-button" onclick="logoutUser()">Logout</button>
-                    <p id="login-error" class="error-message"></p>
-                    <p id="login-success" class="success-message"></p>
-                    <p id="login-status" class="success-message"></p>
-                </div>
-            </section>
-            <section class="mb-28">
-                <h2>Register</h2>
-                <p class="mt-4">Join the JML Studio community to leave comments and share your horror experiences!</p>
-                <div class="game-card">
-                    <input type="text" id="reg-name" class="input-field" placeholder="Enter your name" required>
-                    <input type="password" id="reg-password" class="input-field" placeholder="Enter your password" required>
-                    <button class="submit-button" onclick="registerUser()">Register</button>
-                    <p id="reg-error" class="error-message"></p>
-                    <p id="reg-success" class="success-message"></p>
-                </div>
-            </section>
-            <section class="mb-28">
-                <h2>View Profile</h2>
-                <p class="mt-4">Check your profile details and posted comments.</p>
-                <div class="game-card">
-                    <button class="submit-button" onclick="viewProfile()">View Profile</button>
-                    <p id="profile-error" class="error-message"></p>
-                    <div id="profile-info" class="profile-card" style="display: none;"></div>
-                </div>
-            </section>
-            <section class="mb-28">
-                <h2>Grant Admin</h2>
-                <p class="mt-4">Admins can grant admin privileges to other users by their user ID.</p>
-                <div class="game-card">
-                    <input type="text" id="admin-user-id" class="input-field" placeholder="Enter user ID" required>
-                    <button class="admin-button" onclick="grantAdmin()">Grant Admin</button>
-                    <p id="admin-error" class="error-message"></p>
-                    <p id="admin-success" class="success-message"></p>
-                </div>
-            </section>
-        </section>
-        <section class="mb-28">
-            <h2>Community Comments</h2>
-            <p class="mt-4">Share your thoughts and join the horror community! Log in to leave a comment.</p>
-            <div class="game-card">
-                <textarea id="comment-text" class="input-field" placeholder="Your comment" rows="4" required></textarea>
-                <button class="submit-button" onclick="postComment()">Post Comment</button>
-                <p id="comment-error" class="error-message"></p>
-                <p id="comment-success" class="success-message"></p>
-            </div>
-            <div id="comments-list"></div>
-        </section>
         <section class="behind-section mb-28">
             <h2>Behind the Screams</h2>
             <p class="mt-4 typewriter">Crafting retro horror is our passion. We pour our souls into every pixel and sound to recreate that '90s terror. From sketching low-poly models to composing eerie tracks, every step is a love letter to horror.</p>
@@ -559,400 +394,5 @@
             <a href="https://discord.gg/quQzQAa2nP" target="_blank" rel="noopener noreferrer" class="social-link link-button" onclick="console.log('Footer Discord clicked')">Discord</a>
         </p>
     </footer>
-    <script>
-        const INITIAL_ADMIN_ID = 'bba2c578-b753-46d0-80f5-d6606b7e413b';
-
-        // Generate UUID for user IDs
-        function generateUUID() {
-            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-                const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-                return v.toString(16);
-            });
-        }
-
-        // Toggle user actions visibility
-        function toggleUserActions() {
-            const userActions = document.getElementById('user-actions');
-            const toggleButton = document.querySelector('.toggle-button');
-            if (userActions.classList.contains('hidden')) {
-                userActions.classList.remove('hidden');
-                toggleButton.textContent = 'Hide User Actions';
-            } else {
-                userActions.classList.add('hidden');
-                toggleButton.textContent = 'Show User Actions';
-            }
-        }
-
-        // Register a new user
-        function registerUser() {
-            const name = document.getElementById('reg-name').value.trim();
-            const password = document.getElementById('reg-password').value;
-            const error = document.getElementById('reg-error');
-            const success = document.getElementById('reg-success');
-
-            error.textContent = '';
-            success.textContent = '';
-
-            if (!name || !password) {
-                error.textContent = 'Name and password are required!';
-                return;
-            }
-
-            let users = JSON.parse(localStorage.getItem('users')) || [];
-            if (users.some(user => user.name === name)) {
-                error.textContent = 'Name already taken!';
-                return;
-            }
-
-            const user = {
-                id: generateUUID(),
-                name: name,
-                password: password, // Note: In production, hash the password
-                banned: false,
-                isAdmin: user.id === INITIAL_ADMIN_ID
-            };
-
-            users.push(user);
-            localStorage.setItem('users', JSON.stringify(users));
-            success.textContent = 'Registration successful! You can now log in.';
-            document.getElementById('reg-name').value = '';
-            document.getElementById('reg-password').value = '';
-        }
-
-        // Login a user
-        function loginUser() {
-            const name = document.getElementById('login-name').value.trim();
-            const password = document.getElementById('login-password').value;
-            const error = document.getElementById('login-error');
-            const success = document.getElementById('login-success');
-            const status = document.getElementById('login-status');
-
-            error.textContent = '';
-            success.textContent = '';
-            status.textContent = '';
-
-            if (!name || !password) {
-                error.textContent = 'Name and password are required!';
-                return;
-            }
-
-            let users = JSON.parse(localStorage.getItem('users')) || [];
-            const user = users.find(u => u.name === name && u.password === password);
-
-            if (!user) {
-                error.textContent = 'Invalid name or password!';
-                return;
-            }
-
-            if (user.banned) {
-                error.textContent = 'Your account is banned!';
-                return;
-            }
-
-            // Ensure initial admin has isAdmin set
-            if (user.id === INITIAL_ADMIN_ID && !user.isAdmin) {
-                const userIndex = users.findIndex(u => u.id === user.id);
-                users[userIndex].isAdmin = true;
-                localStorage.setItem('users', JSON.stringify(users));
-                user.isAdmin = true;
-            }
-
-            localStorage.setItem('loggedInUser', JSON.stringify(user));
-            success.textContent = `Logged in as ${user.name}!`;
-            status.textContent = `Current user: ${user.name}`;
-            document.getElementById('login-name').value = '';
-            document.getElementById('login-password').value = '';
-            updateUI();
-        }
-
-        // Logout a user
-        function logoutUser() {
-            localStorage.removeItem('loggedInUser');
-            document.getElementById('login-error').textContent = '';
-            document.getElementById('login-success').textContent = '';
-            document.getElementById('login-status').textContent = 'Logged out.';
-            document.getElementById('profile-info').style.display = 'none';
-            updateUI();
-        }
-
-        // Check if user is admin
-        function isAdmin(user) {
-            return user && user.isAdmin === true;
-        }
-
-        // Grant admin privileges
-        function grantAdmin() {
-            const userId = document.getElementById('admin-user-id').value.trim();
-            const error = document.getElementById('admin-error');
-            const success = document.getElementById('admin-success');
-
-            error.textContent = '';
-            success.textContent = '';
-
-            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-            if (!loggedInUser || !isAdmin(loggedInUser)) {
-                error.textContent = 'Only admins can grant admin privileges!';
-                return;
-            }
-
-            if (!userId) {
-                error.textContent = 'User ID is required!';
-                return;
-            }
-
-            let users = JSON.parse(localStorage.getItem('users')) || [];
-            const userIndex = users.findIndex(u => u.id === userId);
-            if (userIndex === -1) {
-                error.textContent = 'User not found!';
-                return;
-            }
-
-            if (users[userIndex].isAdmin) {
-                error.textContent = 'User is already an admin!';
-                return;
-            }
-
-            users[userIndex].isAdmin = true;
-            localStorage.setItem('users', JSON.stringify(users));
-            success.textContent = 'Admin privileges granted successfully!';
-            document.getElementById('admin-user-id').value = '';
-            updateUI();
-        }
-
-        // Ban a user
-        function banUser(userId) {
-            let users = JSON.parse(localStorage.getItem('users')) || [];
-            const userIndex = users.findIndex(u => u.id === userId);
-            if (userIndex !== -1) {
-                users[userIndex].banned = true;
-                localStorage.setItem('users', JSON.stringify(users));
-                alert('User banned successfully!');
-                updateUI();
-            }
-        }
-
-        // Delete a comment
-        function deleteComment(commentId) {
-            let comments = JSON.parse(localStorage.getItem('comments')) || [];
-            comments = comments.filter(c => c.id !== commentId);
-            localStorage.setItem('comments', JSON.stringify(comments));
-            updateUI();
-        }
-
-        // Show reply input panel
-        function showReplyInput(commentId) {
-            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-            if (!isAdmin(loggedInUser)) {
-                alert('Only admins can reply to comments!');
-                return;
-            }
-
-            const existingPanel = document.getElementById(`reply-panel-${commentId}`);
-            if (existingPanel) {
-                existingPanel.remove();
-                return;
-            }
-
-            const replyPanel = document.createElement('div');
-            replyPanel.id = `reply-panel-${commentId}`;
-            replyPanel.className = 'reply-input-panel';
-            replyPanel.innerHTML = `
-                <textarea id="reply-text-${commentId}" class="input-field" placeholder="Your reply" rows="3"></textarea>
-                <button class="admin-button" onclick="submitReply('${commentId}')">Submit Reply</button>
-                <button class="admin-button" onclick="cancelReply('${commentId}')">Cancel</button>
-                <p id="reply-error-${commentId}" class="error-message"></p>
-            `;
-
-            const commentCard = document.querySelector(`.comment-card[data-comment-id="${commentId}"]`);
-            commentCard.appendChild(replyPanel);
-        }
-
-        // Submit a reply
-        function submitReply(commentId) {
-            const replyText = document.getElementById(`reply-text-${commentId}`).value.trim();
-            const error = document.getElementById(`reply-error-${commentId}`);
-
-            error.textContent = '';
-            if (!replyText) {
-                error.textContent = 'Reply text is required!';
-                return;
-            }
-
-            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-            let comments = JSON.parse(localStorage.getItem('comments')) || [];
-            const comment = comments.find(c => c.id === commentId);
-            if (comment) {
-                if (!comment.replies) comment.replies = [];
-                comment.replies.push({
-                    id: generateUUID(),
-                    userId: loggedInUser.id,
-                    name: loggedInUser.name,
-                    text: replyText,
-                    timestamp: new Date().toISOString()
-                });
-                localStorage.setItem('comments', JSON.stringify(comments));
-                updateUI();
-            }
-        }
-
-        // Cancel reply
-        function cancelReply(commentId) {
-            const replyPanel = document.getElementById(`reply-panel-${commentId}`);
-            if (replyPanel) {
-                replyPanel.remove();
-            }
-        }
-
-        // Post a comment
-        function postComment() {
-            const text = document.getElementById('comment-text').value.trim();
-            const error = document.getElementById('comment-error');
-            const success = document.getElementById('comment-success');
-
-            error.textContent = '';
-            success.textContent = '';
-
-            if (!text) {
-                error.textContent = 'Comment text is required!';
-                return;
-            }
-
-            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-            if (!loggedInUser) {
-                error.textContent = 'You must be logged in to post a comment!';
-                return;
-            }
-
-            if (loggedInUser.banned) {
-                error.textContent = 'You are banned from posting comments!';
-                return;
-            }
-
-            let comments = JSON.parse(localStorage.getItem('comments')) || [];
-            comments.push({
-                id: generateUUID(),
-                userId: loggedInUser.id,
-                name: loggedInUser.name,
-                text: text,
-                timestamp: new Date().toISOString(),
-                replies: []
-            });
-
-            localStorage.setItem('comments', JSON.stringify(comments));
-            success.textContent = 'Comment posted successfully!';
-            document.getElementById('comment-text').value = '';
-            updateUI();
-        }
-
-        // Display comments
-        function displayComments() {
-            const commentsList = document.getElementById('comments-list');
-            const comments = JSON.parse(localStorage.getItem('comments')) || [];
-            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-
-            commentsList.innerHTML = '';
-            comments.forEach(comment => {
-                const user = users.find(u => u.id === comment.userId);
-                const isCommentAdmin = user && user.isAdmin;
-                const adminCheckmark = isCommentAdmin ? '<svg class="admin-checkmark" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="#1DA1F2"/></svg>' : '';
-                const adminTag = isCommentAdmin ? '<span class="admin-tag">[Admin]</span>' : '';
-                let adminControls = '';
-
-                if (loggedInUser && isAdmin(loggedInUser)) {
-                    adminControls = `
-                        <button class="admin-button" onclick="banUser('${comment.userId}')">Ban User</button>
-                        <button class="admin-button" onclick="deleteComment('${comment.id}')">Delete Comment</button>
-                        <button class="admin-button" onclick="showReplyInput('${comment.id}')">Reply</button>
-                    `;
-                }
-
-                const repliesHTML = comment.replies && comment.replies.length > 0
-                    ? comment.replies.map(reply => {
-                        const replyUser = users.find(u => u.id === reply.userId);
-                        const isReplyAdmin = replyUser && replyUser.isAdmin;
-                        const replyCheckmark = isReplyAdmin ? '<svg class="admin-checkmark" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="#1DA1F2"/></svg>' : '';
-                        const replyTag = isReplyAdmin ? '<span class="admin-tag">[Admin]</span>' : '';
-                        return `
-                            <div class="admin-reply-card">
-                                <p class="comment-author">${reply.name} ${replyCheckmark}${replyTag}</p>
-                                <p class="comment-text">${reply.text}</p>
-                                <p class="comment-text timestamp">Posted on ${new Date(reply.timestamp).toLocaleString()}</p>
-                            </div>
-                        `;
-                    }).join('')
-                    : '';
-
-                const commentCard = document.createElement('div');
-                commentCard.className = 'comment-card';
-                commentCard.setAttribute('data-comment-id', comment.id);
-                commentCard.innerHTML = `
-                    <p class="comment-author">${comment.name} ${adminCheckmark}${adminTag}</p>
-                    <p class="comment-text">${comment.text}</p>
-                    <p class="comment-text" style="font-size: 1.4em; color: #999;">Posted on ${new Date(comment.timestamp).toLocaleString()}</p>
-                    ${adminControls}
-                    ${repliesHTML}
-                `;
-                commentsList.appendChild(commentCard);
-            });
-        }
-
-        // View user profile
-        function viewProfile() {
-            const error = document.getElementById('profile-error');
-            const profileInfo = document.getElementById('profile-info');
-
-            error.textContent = '';
-            profileInfo.style.display = 'none';
-
-            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-            if (!loggedInUser) {
-                error.textContent = 'You must be logged in to view your profile!';
-                return;
-            }
-
-            const isUserAdmin = isAdmin(loggedInUser);
-            const adminCheckmark = isUserAdmin ? '<svg class="admin-checkmark" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="#1DA1F2"/></svg>' : '';
-            const adminTag = isUserAdmin ? '<span class="admin-tag">[Admin]</span>' : '';
-
-            const comments = JSON.parse(localStorage.getItem('comments')) || [];
-            const userComments = comments.filter(comment => comment.userId === loggedInUser.id);
-
-            let commentsHTML = '<p class="profile-text">No comments posted yet.</p>';
-            if (userComments.length > 0) {
-                commentsHTML = userComments.map(comment => `
-                    <div class="comment-card">
-                        <p class="comment-text">${comment.text}</p>
-                        <p class="comment-text" style="font-size: 1.4em; color: #999;">Posted on ${new Date(comment.timestamp).toLocaleString()}</p>
-                    </div>
-                `).join('');
-            }
-
-            profileInfo.innerHTML = `
-                <p class="profile-title">${loggedInUser.name} ${adminCheckmark}${adminTag}</p>
-                <p class="profile-text">User ID: ${loggedInUser.id}</p>
-                <p class="profile-text">Status: ${loggedInUser.banned ? 'Banned' : 'Active'}</p>
-                <p class="profile-text">Admin: ${isAdmin(loggedInUser) ? 'Yes' : 'No'}</p>
-                <p class="profile-text">Comments Posted:</p>
-                ${commentsHTML}
-            `;
-            profileInfo.style.display = 'block';
-        }
-
-        // Update UI based on login state
-        function updateUI() {
-            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-            const status = document.getElementById('login-status');
-            if (loggedInUser) {
-                status.textContent = `Current user: ${loggedInUser.name}`;
-            } else {
-                status.textContent = 'Not logged in.';
-            }
-            displayComments();
-        }
-
-        // Load comments and UI on page load
-        window.onload = updateUI;
-    </script>
 </body>
 </html>
